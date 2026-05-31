@@ -171,7 +171,7 @@ jobs:
           name: SideStore-${{ env.MARKETING_VERSION }}-dSYMs.zip
           path: SideStore.dSYMs.zip
 
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@v6
         if: env.DEPLOY_KEY != ''
         with:
           repository: "SideStore/apps-v2.json"
