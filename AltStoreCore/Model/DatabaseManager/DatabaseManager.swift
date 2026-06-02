@@ -373,7 +373,18 @@ private extension DatabaseManager
             
             // Make sure to always update source URL to be current.
             try! altStoreSource.setSourceURL(Source.altStoreSourceURL)
-            
+
+            // ── Discover: eingebackene Default-Source ──────────────────────
+            // Traegt die Discover-Source bei jedem Start ein (falls noch nicht
+            // vorhanden), damit Discover frisch installiert sofort verfuegbar ist
+            // — kein manuelles Hinzufuegen der Source noetig.
+            if let discoverURL = URL(string: "https://github.com/MERIZH1/DiscoverApp/releases/latest/download/apps.json"),
+               let discoverID = try? Source.sourceID(from: discoverURL),
+               Source.first(satisfying: NSPredicate(format: "%K == %@", #keyPath(Source.identifier), discoverID), in: context) == nil
+            {
+                _ = Source.make(name: "Discover", groupID: "discover", sourceURL: discoverURL, context: context)
+            }
+
             let storeApp: StoreApp
             
             if let app = StoreApp.first(satisfying: NSPredicate(format: "%K == %@", #keyPath(StoreApp.bundleIdentifier), StoreApp.altstoreAppID), in: context)
